@@ -109,6 +109,8 @@ def main(page: ft.Page):
 
     def pick_files_result(e: ft.FilePickerResultEvent):
         if e.path:
+            pb.visible = True
+            page.update()
             runtime_data.input_path = e.path
             runtime_data.mp3_files = sorted(glob.glob(f'{runtime_data.input_path}/*.mp3'),
                                             key=lambda x: read_name(x))
@@ -116,6 +118,7 @@ def main(page: ft.Page):
             update_list_view()
             add_texts_button.visible = True
             handle_space.visible = True
+            pb.visible = False
             page.update()
 
     def add_lyrics(audio: ID3(), text: str, selected: ft.Container = None):
@@ -138,6 +141,8 @@ def main(page: ft.Page):
             page.update()
 
     def add_texts_from_dir(_):
+        pb.visible = True
+        page.update()
         result = []
         for i, mp3_path in enumerate(runtime_data.mp3_files):
             mp3_file = os.path.splitext(os.path.basename(mp3_path))[0]
@@ -163,6 +168,8 @@ def main(page: ft.Page):
             except IndexError:
                 result.append(('❗', 'Файл с текстом отсутствует'))
         update_list_view(result)
+        pb.visible = False
+        page.update()
 
     page.window_width = 900
     page.window_height = 800
@@ -265,8 +272,11 @@ def main(page: ft.Page):
         vertical_alignment=ft.CrossAxisAlignment.START,
         visible=False
     )
+    pb = ft.ProgressBar(width=float('inf'), visible=False)
     page.add(
+        ft.Container(pb, padding=0, margin=0),
         ft.Container(
+
             content=ft.Row(
                 controls=[
                     ft.ElevatedButton(
