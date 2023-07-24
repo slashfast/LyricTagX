@@ -112,8 +112,7 @@ def main(page: ft.Page):
             runtime_data.input_path = e.path
             runtime_data.mp3_files = sorted(glob.glob(f'{runtime_data.input_path}/*.mp3'),
                                             key=lambda x: read_name(x))
-            runtime_data.lyrics_files = sorted(glob.glob(f'{runtime_data.input_path}/*.txt'),
-                                               key=lambda x: read_name(x))
+            runtime_data.lyrics_files = sorted(glob.glob(f'{runtime_data.input_path}/*.txt'))
             update_list_view()
             add_texts_button.visible = True
             handle_space.visible = True
