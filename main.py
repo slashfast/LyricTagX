@@ -145,13 +145,18 @@ def main(page: ft.Page):
         page.update()
         result = []
         for i, mp3_path in enumerate(runtime_data.mp3_files):
-            mp3_file = os.path.splitext(os.path.basename(mp3_path))[0]
             audio = ID3(mp3_path)
             for lyrics_path in runtime_data.lyrics_files:
-                lyrics_filename = re.sub(r'(\s*\(.*\))', '', os.path.splitext(os.path.basename(lyrics_path))[0])
-                lyrics_filename = unicodedata.normalize('NFKC', lyrics_filename).lower().replace('ё', 'е')
-                mp3_filename = unicodedata.normalize('NFKC', mp3_file).lower().replace('ё', 'е')
-                if lyrics_filename in mp3_filename:
+                artist = re.sub(
+                    r'[0-9]', '', unicodedata.normalize(
+                        'NFKC', audio.get("TPE1").text[0].lower()).replace('ё', 'е').strip())
+                title = re.sub(
+                    r'[0-9]', '', unicodedata.normalize(
+                        'NFKC', audio.get("TIT2").text[0].lower()).replace('ё', 'е').strip())
+                lyrics_filename = unicodedata.normalize('NFKC', os.path.splitext(os.path.basename(lyrics_path))[
+                    0].lower()).replace('ё', 'е')
+                print(title in lyrics_filename, title, lyrics_filename)
+                if artist in lyrics_filename and title in lyrics_filename:
                     with open(lyrics_path, "r", encoding="utf-8") as file:
                         text = file.read()
                         lines = text.split('\n')
